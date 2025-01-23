@@ -2,6 +2,9 @@
 export function createChat(config) {
     const { webhookUrl, title = "Chat de Soporte", welcomeMessage = "¡Hola! ¿En qué puedo ayudarte?" } = config;
 
+    // Generar un sessionId único para el usuario
+    const sessionId = generateSessionId();
+
     // Crear el contenedor del chat
     const chatContainer = document.createElement('div');
     chatContainer.className = 'n8n-chat-container';
@@ -62,16 +65,27 @@ export function createChat(config) {
             chatInput.value = '';
 
             try {
+                // Enviar el mensaje junto con el sessionId
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ message }),
+                    body: JSON.stringify({ message, sessionId }), // Incluir sessionId
                 });
 
+                // Verificar si la respuesta es válida
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+                }
+
+                // Procesar la respuesta JSON
                 const data = await response.json();
-                addMessage('bot', data.response);
+                if (data.response) {
+                    addMessage('bot', data.response); // Mostrar la respuesta en el chat
+                } else {
+                    throw new Error("La respuesta no contiene un mensaje válido.");
+                }
             } catch (error) {
                 console.error('Error al enviar el mensaje:', error);
                 addMessage('bot', 'Lo siento, hubo un error al procesar tu mensaje.');
@@ -98,5 +112,10 @@ export function createChat(config) {
 
         // Scroll al final del chat
         chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Función para generar un sessionId único
+    function generateSessionId() {
+        return 'session-' + Math.random().toString(36).substr(2, 9);
     }
 }
