@@ -4,9 +4,9 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 350px;
+    width: 400px; /* Aumentamos el ancho */
     max-width: 90%;
-    height: 500px; /* Altura fija para el contenedor del chat */
+    height: 600px; /* Aumentamos la altura */
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -104,7 +104,7 @@
     background-color: #ef4444;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 20px; /* Aumentamos el padding */
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
@@ -112,6 +112,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-left: auto; /* Mover el botón a la derecha */
 }
 
 .n8n-chat-end-button:hover {
