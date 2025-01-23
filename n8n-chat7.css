@@ -6,6 +6,7 @@
     right: 20px;
     width: 350px;
     max-width: 90%;
+    height: 500px; /* Altura fija para el contenedor del chat */
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -45,7 +46,7 @@
 .n8n-chat-body {
     flex: 1;
     padding: 16px;
-    overflow-y: auto;
+    overflow-y: auto; /* Habilitar el scroll vertical */
     background-color: #f9fafb;
     display: flex;
     flex-direction: column;
