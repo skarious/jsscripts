@@ -5,6 +5,9 @@ export function createChat(config) {
     // Generar un sessionId único para el usuario
     const sessionId = generateSessionId();
 
+    // Cargar el historial del chat desde localStorage
+    let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+
     // Crear el contenedor del chat
     const chatContainer = document.createElement('div');
     chatContainer.className = 'n8n-chat-container';
@@ -35,9 +38,15 @@ export function createChat(config) {
     chatButton.className = 'n8n-chat-button';
     chatButton.textContent = 'Enviar';
 
+    // Crear el botón de finalizar chat
+    const endChatButton = document.createElement('button');
+    endChatButton.className = 'n8n-chat-end-button';
+    endChatButton.textContent = 'Finalizar chat';
+
     // Añadir elementos al pie del chat
     chatFooter.appendChild(chatInput);
     chatFooter.appendChild(chatButton);
+    chatFooter.appendChild(endChatButton);
 
     // Añadir elementos al contenedor del chat
     chatContainer.appendChild(chatHeader);
@@ -47,8 +56,36 @@ export function createChat(config) {
     // Añadir el chat al cuerpo del documento
     document.body.appendChild(chatContainer);
 
-    // Mostrar mensaje de bienvenida
-    addMessage('bot', welcomeMessage);
+    // Mostrar el historial del chat al cargar la página
+    chatHistory.forEach(msg => addMessage(msg.sender, msg.text));
+
+    // Mostrar mensaje de bienvenida si no hay historial
+    if (chatHistory.length === 0) {
+        addMessage('bot', welcomeMessage);
+    }
+
+    // Temporizador para borrar el historial por inactividad
+    let inactivityTimer;
+
+    const resetInactivityTimer = () => {
+        // Reiniciar el temporizador
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            // Borrar el historial del chat de localStorage
+            localStorage.removeItem('chatHistory');
+            // Limpiar el cuerpo del chat
+            chatBody.innerHTML = '';
+            // Mostrar un mensaje de despedida
+            addMessage('bot', 'La conversación ha finalizado por inactividad.');
+        }, 30 * 60 * 1000); // 30 minutos de inactividad
+    };
+
+    // Iniciar el temporizador al cargar la página
+    resetInactivityTimer();
+
+    // Reiniciar el temporizador con la interacción del usuario
+    chatInput.addEventListener('input', resetInactivityTimer);
+    chatButton.addEventListener('click', resetInactivityTimer);
 
     // Función para minimizar/maximizar el chat
     const toggleButton = chatHeader.querySelector('#n8n-chat-toggle');
@@ -81,16 +118,25 @@ export function createChat(config) {
 
                 // Procesar la respuesta JSON
                 const data = await response.json();
-                if (data.response) {
-                    addMessage('bot', data.response); // Mostrar la respuesta en el chat
-                } else {
-                    throw new Error("La respuesta no contiene un mensaje válido.");
-                }
+
+                // Manejar diferentes formatos de respuesta
+                let botMessage = data.response || data.message || data.text || "Lo siento, no entendí la respuesta.";
+                addMessage('bot', botMessage); // Mostrar la respuesta en el chat
             } catch (error) {
                 console.error('Error al enviar el mensaje:', error);
                 addMessage('bot', 'Lo siento, hubo un error al procesar tu mensaje.');
             }
         }
+    });
+
+    // Función para finalizar el chat
+    endChatButton.addEventListener('click', () => {
+        // Borrar el historial del chat de localStorage
+        localStorage.removeItem('chatHistory');
+        // Limpiar el cuerpo del chat
+        chatBody.innerHTML = '';
+        // Mostrar un mensaje de despedida
+        addMessage('bot', 'Gracias por usar nuestro chat. ¡Hasta luego!');
     });
 
     // Función para añadir mensajes al chat
@@ -112,6 +158,10 @@ export function createChat(config) {
 
         // Scroll al final del chat
         chatBody.scrollTop = chatBody.scrollHeight;
+
+        // Guardar el mensaje en el historial
+        chatHistory.push({ sender, text });
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
     }
 
     // Función para generar un sessionId único
