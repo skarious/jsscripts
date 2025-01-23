@@ -1,97 +1,78 @@
-@charset "UTF-8";
-
-/* Modernized Design */
 :root {
-  --chat--color-primary: #4a90e2;
-  --chat--color-primary-shade-50: #3a78c2;
-  --chat--color-primary-shade-100: #2a60a2;
-  --chat--color-secondary: #50e3c2;
-  --chat--color-secondary-shade-50: #40c2a2;
-  --chat--color-white: #ffffff;
-  --chat--color-light: #f9f9f9;
-  --chat--color-light-shade-50: #e9e9e9;
-  --chat--color-light-shade-100: #d9d9d9;
-  --chat--color-medium: #b0b0b0;
-  --chat--color-dark: #1a1a1a;
-  --chat--color-disabled: #a0a0a0;
-  --chat--color-typing: #606060;
-  --chat--spacing: 1.2rem;
-  --chat--border-radius: 0.5rem;
-  --chat--transition-duration: 0.2s;
-  --chat--window--width: 450px;
-  --chat--window--height: 650px;
-  --chat--textarea--height: 60px;
-  --chat--message--bot--background: var(--chat--color-light);
-  --chat--message--bot--color: var(--chat--color-dark);
-  --chat--message--user--background: var(--chat--color-primary);
-  --chat--message--user--color: var(--chat--color-white);
-  --chat--message--pre--background: rgba(0, 0, 0, 0.1);
-  --chat--toggle--background: var(--chat--color-primary);
-  --chat--toggle--hover--background: var(--chat--color-primary-shade-50);
-  --chat--toggle--active--background: var(--chat--color-primary-shade-100);
-  --chat--toggle--color: var(--chat--color-white);
-  --chat--toggle--size: 70px;
-  --chat--heading--font-size: 2.2em;
+  --primary-color: #4CAF50;
+  --secondary-color: #FFC107;
+  --background-color: #F4F4F9;
+  --text-color: #333;
+  --border-radius: 8px;
+  --transition-speed: 0.3s;
 }
 
-/* Updated Chat Window */
-.chat-window-wrapper .chat-window {
-  border: 2px solid var(--chat--color-light-shade-100);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+body {
+  font-family: 'Arial', sans-serif;
+  background: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
 }
 
-/* Updated Chat Messages */
+.chat-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.chat-header {
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.chat-messages {
+  padding: 1rem;
+  height: 300px;
+  overflow-y: auto;
+}
+
+.chat-input {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  margin-right: 0.5rem;
+}
+
+.chat-input button {
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background var(--transition-speed);
+}
+
+.chat-input button:hover {
+  background: #e0a800;
+}
+
 .chat-message {
-  font-size: 1.1rem;
-  padding: var(--chat--spacing);
-  border-radius: var(--chat--border-radius);
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
 }
 
-.chat-message.chat-message-from-bot {
-  background-color: var(--chat--message--bot--background);
-  color: var(--chat--message--bot--color);
-}
-
-.chat-message.chat-message-from-user {
-  background-color: var(--chat--message--user--background);
-  color: var(--chat--message--user--color);
-}
-
-/* Updated Input Area */
-.chat-input textarea {
-  border: 1px solid var(--chat--color-medium);
-  border-radius: var(--chat--border-radius);
-  padding: 0.8rem;
-  font-size: 1rem;
-}
-
-.chat-input textarea:focus {
-  border-color: var(--chat--color-primary);
-  outline: none;
-}
-
-.chat-input-send-button {
-  background-color: var(--chat--color-primary);
-  color: var(--chat--color-white);
-  border-radius: 50%;
-  transition: background-color var(--chat--transition-duration);
-}
-
-.chat-input-send-button:hover {
-  background-color: var(--chat--color-primary-shade-50);
-}
-
-/* Modernized Typing Animation */
-.chat-message-typing .chat-message-typing-circle {
-  background-color: var(--chat--color-typing);
-  animation: chat-message-typing-animation-bouncing 0.8s ease-in-out infinite;
-}
-
-@keyframes chat-message-typing-animation-bouncing {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+.user-message {
+  background: var(--primary-color);
+  color: white;
+  text-align: right;
 }
