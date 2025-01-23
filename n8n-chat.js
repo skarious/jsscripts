@@ -1,5 +1,5 @@
 // n8n-chat.js
-function createChat(config) {
+export function createChat(config) {
     const { webhookUrl, title = "Chat de Soporte", welcomeMessage = "¡Hola! ¿En qué puedo ayudarte?" } = config;
 
     // Crear el contenedor del chat
