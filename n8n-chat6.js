@@ -150,7 +150,13 @@ export function createChat(config) {
 
         const messageContent = document.createElement('div');
         messageContent.className = 'n8n-chat-message-content';
-        messageContent.textContent = text;
+
+        // Convertir Markdown a HTML si el mensaje es del bot
+        if (sender === 'bot') {
+            messageContent.innerHTML = marked.parse(text); // Usar marked para renderizar Markdown
+        } else {
+            messageContent.textContent = text; // Mostrar texto plano para el usuario
+        }
 
         const messageTime = document.createElement('div');
         messageTime.className = 'n8n-chat-message-time';
