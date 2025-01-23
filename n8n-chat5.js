@@ -64,29 +64,6 @@ export function createChat(config) {
         addMessage('bot', welcomeMessage);
     }
 
-    // Temporizador para borrar el historial por inactividad
-    let inactivityTimer;
-
-    const resetInactivityTimer = () => {
-        // Reiniciar el temporizador
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
-            // Borrar el historial del chat de localStorage
-            localStorage.removeItem('chatHistory');
-            // Limpiar el cuerpo del chat
-            chatBody.innerHTML = '';
-            // Mostrar un mensaje de despedida
-            addMessage('bot', 'La conversación ha finalizado por inactividad.');
-        }, 30 * 60 * 1000); // 30 minutos de inactividad
-    };
-
-    // Iniciar el temporizador al cargar la página
-    resetInactivityTimer();
-
-    // Reiniciar el temporizador con la interacción del usuario
-    chatInput.addEventListener('input', resetInactivityTimer);
-    chatButton.addEventListener('click', resetInactivityTimer);
-
     // Función para minimizar/maximizar el chat
     const toggleButton = chatHeader.querySelector('#n8n-chat-toggle');
     toggleButton.addEventListener('click', () => {
@@ -95,11 +72,14 @@ export function createChat(config) {
     });
 
     // Función para enviar mensajes
-    chatButton.addEventListener('click', async () => {
+    const sendMessage = async () => {
         const message = chatInput.value.trim();
         if (message) {
             addMessage('user', message);
             chatInput.value = '';
+
+            // Mostrar indicador de "escribiendo"
+            showTypingIndicator();
 
             try {
                 // Enviar el mensaje junto con el sessionId
@@ -119,13 +99,27 @@ export function createChat(config) {
                 // Procesar la respuesta JSON
                 const data = await response.json();
 
+                // Ocultar indicador de "escribiendo"
+                hideTypingIndicator();
+
                 // Manejar diferentes formatos de respuesta
                 let botMessage = data.response || data.message || data.text || "Lo siento, no entendí la respuesta.";
                 addMessage('bot', botMessage); // Mostrar la respuesta en el chat
             } catch (error) {
                 console.error('Error al enviar el mensaje:', error);
+                hideTypingIndicator();
                 addMessage('bot', 'Lo siento, hubo un error al procesar tu mensaje.');
             }
+        }
+    };
+
+    // Enviar mensaje al hacer clic en el botón
+    chatButton.addEventListener('click', sendMessage);
+
+    // Enviar mensaje al presionar Enter
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
         }
     });
 
@@ -162,6 +156,27 @@ export function createChat(config) {
         // Guardar el mensaje en el historial
         chatHistory.push({ sender, text });
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    }
+
+    // Función para mostrar el indicador de "escribiendo"
+    function showTypingIndicator() {
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'n8n-chat-typing-indicator';
+        typingIndicator.innerHTML = `
+            <span></span>
+            <span></span>
+            <span></span>
+        `;
+        chatBody.appendChild(typingIndicator);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Función para ocultar el indicador de "escribiendo"
+    function hideTypingIndicator() {
+        const typingIndicator = chatBody.querySelector('.n8n-chat-typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
     }
 
     // Función para generar un sessionId único
