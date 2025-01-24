@@ -101,18 +101,18 @@
 }
 
 .n8n-chat-end-button {
-    background-color: #ef4444;
+   background-color: #ef4444;
     color: white;
     border: none;
-    padding: 10px 20px; /* Aumentamos el padding */
-    border-radius: 8px;
-    font-size: 14px;
+    padding: 6px 12px; /* Reducimos el padding */
+    border-radius: 6px; /* Ajustamos el borde redondeado */
+    font-size: 12px; /* Reducimos el tamaño de la fuente */
     cursor: pointer;
     transition: background-color 0.2s;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-left: auto; /* Mover el botón a la derecha */
+    gap: 6px; /* Reducimos el espacio entre los elementos dentro del botón */
+    margin-left: auto; /* Mantenemos el botón alineado a la derecha */
 }
 
 .n8n-chat-end-button:hover {
